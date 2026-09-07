@@ -65,18 +65,6 @@ An interactive A* (A-Star) algorithm visualizer and Python lab suite.
 - Step-by-step algorithm visualization
 - Generate Python code for the current maze
 
-## 🧠 Algorithm
-
-A* uses the formula:
-
-`f(n) = g(n) + h(n)`
-
-Where:
-- `g(n)` = cost from the start node
-- `h(n)` = estimated cost to the goal
-- `f(n)` = total priority score
-
-
 ## 🧠 Core Theory & Mathematical Formulation
 
 The **A\*** search algorithm is an informed search technique that evaluates nodes using the cost function:
