@@ -19,6 +19,63 @@ It contains two complete components:
 2. **Interactive Web Visualizer (`index.html`, `style.css`, `app.js`)**: A cyber-dark glassmorphism web application to interactively draw mazes, step through algorithm evaluations, inspect $f(n) = g(n) + h(n)$ math in real-time, and export custom Python code.
 
 ---
+# A* Maze Pathfinder
+
+An interactive A* (A-Star) algorithm visualizer and Python lab suite.
+
+## 🚀 Live Demo
+
+👉 [Open A* Maze Pathfinder](https://maze-pathfinder-a.onrender.com/)
+
+## Features
+
+- Visualize the A* pathfinding algorithm
+- Create and edit maze walls
+- Multiple maze presets
+- Adjustable grid dimensions
+- Different heuristic functions
+- Step-by-step algorithm visualization
+- Generate Python code for the current maze
+
+## 🧠 Algorithm
+
+A* uses the formula:
+
+`f(n) = g(n) + h(n)`
+
+Where:
+- `g(n)` = cost from the start node
+- `h(n)` = estimated cost to the goal
+- `f(n)` = total priority score
+# A* Maze Pathfinder
+
+An interactive A* (A-Star) algorithm visualizer and Python lab suite.
+
+## 🚀 Live Demo
+
+👉 [Open A* Maze Pathfinder](https://maze-pathfinder-a.onrender.com/)
+
+## Features
+
+- Visualize the A* pathfinding algorithm
+- Create and edit maze walls
+- Multiple maze presets
+- Adjustable grid dimensions
+- Different heuristic functions
+- Step-by-step algorithm visualization
+- Generate Python code for the current maze
+
+## 🧠 Algorithm
+
+A* uses the formula:
+
+`f(n) = g(n) + h(n)`
+
+Where:
+- `g(n)` = cost from the start node
+- `h(n)` = estimated cost to the goal
+- `f(n)` = total priority score
+
 
 ## 🧠 Core Theory & Mathematical Formulation
 
