@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A* Maze Pathfinder | Interactive AI Visualizer & Lab Suite</title>
+  <meta name="description" content="Interactive A* Heuristic Search Algorithm Visualizer and Python Lab Project for 2D Grid Maze Pathfinding.">
+  <meta name="theme-color" content="#0d1117">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand-group">
+        <div class="logo-badge">
+          <span class="logo-icon">★</span>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title">A* Maze Pathfinder</div>
+          <div class="brand-subtitle">Heuristic Search Algorithm Visualizer & Python Lab Suite</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btn-sound-toggle" class="icon-btn" title="Toggle Sound Effects" aria-label="Toggle Sound">
+          <span id="sound-icon">🔊</span>
+        </button>
+        <button id="btn-open-lab-modal" class="pill-btn primary-pill">
+          <span>📘 Lab Practical Manual</span>
+        </button>
+        <button id="btn-export-python" class="pill-btn secondary-pill">
+          <span>🐍 Export Python Code</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="workspace-layout">
+      <!-- Left Sidebar: Controls & Settings -->
+      <aside class="sidebar-panel">
+        <!-- Control Group: Tools -->
+        <div class="card-section">
+          <div class="section-header">
+            <span class="section-icon">🛠️</span>
+            <h3>Drawing Tools</h3>
+          </div>
+          <div class="tool-selector">
+            <button class="tool-btn active" data-tool="wall" id="tool-wall">
+              <span class="tool-icon wall-icon"></span>
+              <span class="tool-label">Wall (1)</span>
+            </button>
+            <button class="tool-btn" data-tool="erase" id="tool-erase">
+              <span class="tool-icon erase-icon"></span>
+              <span class="tool-label">Erase (0)</span>
+            </button>
+            <button class="tool-btn" data-tool="start" id="tool-start">
+              <span class="tool-icon start-icon">S</span>
+              <span class="tool-label">Start (S)</span>
+            </button>
+            <button class="tool-btn" data-tool="goal" id="tool-goal">
+              <span class="tool-icon goal-icon">G</span>
+              <span class="tool-label">Goal (G)</span>
+            </button>
+          </div>
+          <p class="tool-hint">Tip: Click or drag on the grid to place walls or erase.</p>
+        </div>
+
+        <!-- Control Group: Presets & Generators -->
+        <div class="card-section">
+          <div class="section-header">
+            <span class="section-icon">🗺️</span>
+            <h3>Maze Presets</h3>
+          </div>
+          <div class="preset-grid">
+            <button class="btn-preset" id="preset-lab">📋 Lab 6x6 Default</button>
+            <button class="btn-preset" id="preset-trap">⚠️ Dead End Trap</button>
+            <button class="btn-preset" id="preset-spiral">🌀 Spiral Pattern</button>
+            <button class="btn-preset" id="preset-random">🎲 Random Walls</button>
+          </div>
+        </div>
+
+        <!-- Control Group: Grid & Heuristic Settings -->
+        <div class="card-section">
+          <div class="section-header">
+            <span class="section-icon">⚙️</span>
+            <h3>Algorithm Settings</h3>
+          </div>
+
+          <div class="form-group">
+            <label for="select-grid-size">Grid Dimension:</label>
+            <select id="select-grid-size" class="custom-select">
+              <option value="6">6 x 6 (Standard Lab)</option>
+              <option value="10">10 x 10 (Intermediate)</option>
+              <option value="15" selected>15 x 15 (Standard)</option>
+              <option value="20">20 x 20 (Large)</option>
+              <option value="25">25 x 25 (Complex)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="select-heuristic">Heuristic Function $h(n)$:</label>
+            <select id="select-heuristic" class="custom-select">
+              <option value="manhattan" selected>Manhattan: |x1-x2| + |y1-y2|</option>
+              <option value="euclidean">Euclidean: √((x1-x2)² + (y1-y2)²)</option>
+              <option value="chebyshev">Chebyshev: max(|x1-x2|, |y1-y2|)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <div class="slider-header">
+              <label for="speed-slider">Visualization Speed:</label>
+              <span id="speed-label">Fast (30ms)</span>
+            </div>
+            <input type="range" id="speed-slider" min="1" max="100" value="70" class="custom-range">
+          </div>
+        </div>
+
+        <!-- Formula Callout -->
+        <div class="card-section formula-card">
+          <div class="formula-badge">Core Formula</div>
+          <div class="formula-math">f(n) = g(n) + h(n)</div>
+          <div class="formula-desc">
+            <div><span class="dot dot-g"></span> <strong>g(n):</strong> Cost from Start to n</div>
+            <div><span class="dot dot-h"></span> <strong>h(n):</strong> Heuristic estimate to Goal</div>
+            <div><span class="dot dot-f"></span> <strong>f(n):</strong> Total priority score</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center: Main Grid Visualizer & Playback -->
+      <section class="visualizer-panel">
+        <!-- Top Toolbar -->
+        <div class="action-toolbar">
+          <div class="action-btn-group">
+            <button id="btn-start-search" class="action-btn btn-primary" title="Run A* Algorithm">
+              <span class="btn-icon">▶</span>
+              <span id="btn-start-label">Find Path</span>
+            </button>
+            <button id="btn-step-search" class="action-btn btn-secondary" title="Execute single step">
+              <span class="btn-icon">⏭</span>
+              <span>Step-by-Step</span>
+            </button>
+            <button id="btn-clear-path" class="action-btn btn-outline" title="Clear path & visited nodes">
+              <span class="btn-icon">🧹</span>
+              <span>Clear Path</span>
+            </button>
+            <button id="btn-reset-maze" class="action-btn btn-danger" title="Clear all walls and reset">
+              <span class="btn-icon">🔄</span>
+              <span>Reset Grid</span>
+            </button>
+          </div>
+
+          <div class="legend-bar">
+            <div class="legend-item"><span class="legend-box start-box">S</span> Start</div>
+            <div class="legend-item"><span class="legend-box goal-box">G</span> Goal</div>
+            <div class="legend-item"><span class="legend-box wall-box">1</span> Wall</div>
+            <div class="legend-item"><span class="legend-box open-box"></span> Open Set</div>
+            <div class="legend-item"><span class="legend-box closed-box"></span> Visited</div>
+            <div class="legend-item"><span class="legend-box path-box">*</span> Shortest Path</div>
+          </div>
+        </div>
+
+        <!-- Grid Container -->
+        <div class="grid-stage">
+          <div id="maze-grid" class="maze-grid-matrix" tabindex="0">
+            <!-- Grid generated dynamically by JS -->
+          </div>
+
+          <!-- Cell Tooltip Inspector -->
+          <div id="cell-inspector" class="inspector-tooltip hidden">
+            <div class="inspector-title" id="insp-coord">Cell (r, c)</div>
+            <div class="inspector-grid">
+              <div class="insp-row"><span class="label">State:</span> <span id="insp-state" class="value">-</span></div>
+              <div class="insp-row"><span class="label">g(n) [Cost]:</span> <span id="insp-g" class="value">-</span></div>
+              <div class="insp-row"><span class="label">h(n) [Heuristic]:</span> <span id="insp-h" class="value">-</span></div>
+              <div class="insp-row highlight"><span class="label">f(n) [Total]:</span> <span id="insp-f" class="value">-</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status & Stats Bar -->
+        <div class="metrics-dashboard">
+          <div class="metric-card">
+            <div class="metric-label">Algorithm Status</div>
+            <div class="metric-value status-ready" id="stat-status">Ready</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Shortest Path Length</div>
+            <div class="metric-value" id="stat-path-length">--</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Nodes Visited (Closed)</div>
+            <div class="metric-value" id="stat-visited-count">0</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Frontier Size (Open)</div>
+            <div class="metric-value" id="stat-frontier-count">0</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Execution Time</div>
+            <div class="metric-value" id="stat-execution-time">0 ms</div>
+          </div>
+        </div>
+
+        <!-- ASCII Terminal Live Preview -->
+        <div class="terminal-preview-card">
+          <div class="terminal-header">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
+            <span class="terminal-title">Python Terminal Simulation Output</span>
+            <button id="btn-copy-ascii" class="mini-copy-btn">📋 Copy ASCII</button>
+          </div>
+          <pre id="terminal-output" class="terminal-body">Run the algorithm to see the terminal representation...</pre>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal: Lab Practical Manual -->
+  <div id="modal-lab" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2>📘 Python Lab Practical: A* Search Algorithm</h2>
+        <button class="modal-close-btn" id="btn-close-lab-modal">&times;</button>
+      </div>
+      <div class="modal-body markdown-style">
+        <section class="lab-section">
+          <h3>1. Aim</h3>
+          <p>To implement the <strong>A* (A-Star) Heuristic Search Algorithm</strong> in Python to find the shortest path from a starting cell (<code>S</code>) to a goal cell (<code>G</code>) in a 2D maze with obstacle walls (<code>1</code>).</p>
+        </section>
+
+        <section class="lab-section">
+          <h3>2. Theory of A* Heuristic Search</h3>
+          <p>A* is an informed search algorithm combining Dijkstra's algorithm and Greedy Best-First search. It evaluates nodes using:</p>
+          <div class="code-box">f(n) = g(n) + h(n)</div>
+          <ul>
+            <li><strong>g(n):</strong> Exact movement cost from Start to node <em>n</em>.</li>
+            <li><strong>h(n):</strong> Heuristic estimated cost from node <em>n</em> to Goal.</li>
+            <li><strong>Manhattan Distance:</strong> <code>h(n) = |x1 - x2| + |y1 - y2|</code> (ideal for 4-directional grids).</li>
+          </ul>
+        </section>
+
+        <section class="lab-section">
+          <h3>3. Algorithm Steps</h3>
+          <ol>
+            <li>Initialize <code>open_list</code> with Start node, <code>g(Start) = 0</code>, and <code>f(Start) = h(Start)</code>.</li>
+            <li>While <code>open_list</code> is not empty, pop the node with the lowest <code>f(n)</code>.</li>
+            <li>If the current node is Goal, reconstruct and return the shortest path.</li>
+            <li>Otherwise, add current node to <code>closed_set</code> and explore all 4 adjacent neighbors (Up, Down, Left, Right).</li>
+            <li>For each non-wall neighbor not in <code>closed_set</code>, calculate <code>tentative_g = g(current) + 1</code>.</li>
+            <li>If <code>tentative_g &lt; g(neighbor)</code>, record parent pointer, update <code>g</code> and <code>f</code> scores, and insert into <code>open_list</code>.</li>
+            <li>If <code>open_list</code> empties without reaching Goal, return <em>"No path found"</em>.</li>
+          </ol>
+        </section>
+
+        <section class="lab-section">
+          <h3>4. Conclusion</h3>
+          <p>The A* algorithm guarantees the optimal (shortest) path when using an admissible heuristic like Manhattan Distance, efficiently pruning unpromising branches compared to uninformed search techniques.</p>
+        </section>
+      </div>
+      <div class="modal-footer">
+        <button class="pill-btn primary-pill" id="btn-close-modal-footer">Got It</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Export Python Code -->
+  <div id="modal-export" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2>🐍 Generated Python Code (Current Maze)</h2>
+        <button class="modal-close-btn" id="btn-close-export-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="export-desc">This code reflects the current customized grid on your screen. You can copy or download it to run directly with Python!</p>
+        <div class="code-container">
+          <pre><code id="export-code-display">Generating code...</code></pre>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="pill-btn secondary-pill" id="btn-copy-py-code">📋 Copy to Clipboard</button>
+        <button class="pill-btn primary-pill" id="btn-download-py-file">💾 Download maze_custom.py</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast-notification hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
